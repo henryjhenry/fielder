@@ -36,6 +36,10 @@ func main() {
 	flag.Parse()
 	var err error
 	fp := *src
+	if fp == "" || *typeFlag == "" || *tagFlag == "" {
+		flag.Usage()
+		return
+	}
 	if fp[0] != '/' {
 		fp, err = filepath.Abs(fp)
 		if err != nil {
