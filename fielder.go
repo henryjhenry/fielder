@@ -15,10 +15,10 @@ import (
 )
 
 var (
-	typeFlag = flag.String("type", "", "special type")
-	tagFlag  = flag.String("tag", "", "special tag")
-	src      = flag.String("src", "", "special source file")
-	dryrun   = flag.Bool("dryrun", false, "dryrun")
+	typeFlag = flag.String("type", "", "special type, required.")
+	tagFlag  = flag.String("tag", "", "special struct tag, if not specified, the first tag used.")
+	src      = flag.String("src", "", "special source file, required.")
+	dryrun   = flag.Bool("dryrun", false, "dryrun, if set, result will output to stdout.")
 )
 
 type Template struct {
@@ -36,7 +36,7 @@ func main() {
 	flag.Parse()
 	var err error
 	fp := *src
-	if fp == "" || *typeFlag == "" || *tagFlag == "" {
+	if fp == "" || *typeFlag == "" {
 		flag.Usage()
 		return
 	}
