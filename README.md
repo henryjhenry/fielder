@@ -37,7 +37,7 @@ type GormModel struct {
 执行 `fielder`:
 
 ```bash
-fielder -src=gorm_example.go -type= -tag=gorm
+fielder -src=gorm_example.go -type=GormModel -tag=gorm
 ```
 
 生成文件 `gorm_example_fields.go`
