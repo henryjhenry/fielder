@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+	"unicode"
 )
 
 var (
@@ -61,9 +62,11 @@ func main() {
 	// ast.Print(fs, f)
 	ast.Walk(&g, f)
 	if len(g.fields) == 0 {
-		panic("no field to genarate")
+		panic("no fields to generate")
 	}
-	g.generate()
+	if err := g.generate(); err != nil {
+		panic(err)
+	}
 }
 
 type gen struct {
@@ -142,11 +145,23 @@ func parse(t *ast.StructType) []Field {
 	for _, f := range t.Fields.List {
 		name := f.Names[0].Name
 		sqlFiledName := tp.Parse(f.Tag.Value)
+		if !validateFieldName(sqlFiledName) {
+			panic(fmt.Errorf("field '%s' tag value '%s' is invalid", name, sqlFiledName))
+		}
 		if sqlFiledName != "" {
 			fields = append(fields, Field{Name: name, SQLFieldName: sqlFiledName})
 		}
 	}
 	return fields
+}
+
+func validateFieldName(field string) bool {
+	for _, r := range field {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' {
+			return false
+		}
+	}
+	return true
 }
 
 func newTagParser(typ string) TagParser {
